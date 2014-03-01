@@ -1,4 +1,5 @@
 (ns paint.extra.gui
+  (gen-class)
   (:require [quil.core :as quil]
             [paint.core :as paint]
             [paint.brush :as brush]))
@@ -44,5 +45,7 @@
                :size [width height]
                :renderer :p2d))
 
+(defn -main [& args]
+  (show-window 640 480 {:color [255 255 255]}))
 
 
