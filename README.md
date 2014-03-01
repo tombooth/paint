@@ -1,4 +1,4 @@
-# paint
+# paint [![Build Status](https://travis-ci.org/tombooth/paint.png?branch=master)](https://travis-ci.org/tombooth/paint)
 
 A Clojure library that replicates painting on a substrate.
 
