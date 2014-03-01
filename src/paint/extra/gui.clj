@@ -9,8 +9,18 @@
 (def brush-state (atom {:width 3 :height 3
                         :fn (brush/block [0 0 0])}))
 
+
+(defn engine [substrate-state]
+  ;; width and height invariant throughout the life time of the painting
+  (let [{max-i :width max-j :height} @substrate-state]
+    (println "Starting engine...")
+    (doseq [[i j] (repeatedly #(vector (rand-int max-i)
+                                       (rand-int max-j)))]
+      (swap! substrate-state paint/engine-cycle i j))))
+
+
 (defn setup []
-  nil)
+  (.start (Thread. (partial engine substrate-state))))
 
 
 (defn memoized-color []

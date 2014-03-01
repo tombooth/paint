@@ -25,4 +25,10 @@
                                         substrate-height i j
                                         brushed))))
 
+(defn engine-cycle [substrate i j]
+  (let [{width :width height :height cells :cells} substrate
+        cluster (util/extract cells width height i j)
+        host (nth cluster 4)
+        patched (assoc cluster 4 {:color [255 0 0]})]
+    (assoc substrate :cells (util/patch cells width height i j patched))))
 
