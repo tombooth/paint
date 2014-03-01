@@ -48,33 +48,4 @@
                                             8 7 1 2
                                             5 4 5 6])))
 
-(deftest test-thread
-  (is (= (util/thread [0 1 2 3] [9 8 7])
-         [0 9 1 8 2 7 3])))
-
-(deftest test-sections
-  (is (= (util/sections square [0 2 5 6])
-         [[1 2 ] [5]]))
-  (is (= (util/sections square [0 0 2 5 7 9])
-         [[] [3 4 4] [7 8]])))
-
-(deftest test-around-cols
-  (is (= (util/around-cols 1 3 3 3) [0 1 2]))
-  (is (= (util/around-cols 0 3 3 3) [nil 0 1])))
-
-(deftest test-around-rows
-  (is (= (util/around-rows 4 3 3 3 3)
-         [[0 1 2] [3 4 5] [6 7 8]])))
-
-(deftest test-to-section-indices
-  (is (= (util/to-section-indices [[0 1 2] [3 4 5]])
-         [0 3 3 6])))
-
-(deftest test-filter-rows
-  (is (= (util/filter-rows [[nil nil] [nil 1]])
-         [[1]])))
-
-(deftest test-back-to-patch
-  (is (= (util/back-to-patch [[nil nil] [nil 15]] 2)
-         [[nil nil] [nil 3]])))
 
