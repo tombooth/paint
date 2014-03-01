@@ -12,12 +12,29 @@
 (defn setup []
   nil)
 
+
+(defn memoized-color []
+  (let [mem (atom {})]
+    (fn [{[r g b] :color}]
+      (let [int-val (bit-or (bit-shift-left r 0)
+                            (bit-shift-left g 8)
+                            (bit-shift-left b 16))]
+        (if-let [e (find @mem int-val)]
+          (val e)
+          (let [ret (quil/color r g b)]
+            (swap! mem assoc int-val ret)
+            ret))))))
+
+
+(def convert-to-color (memoized-color))
+
 (defn draw-pixels [substrate]
   (quil/load-pixels)
-  (let [pixels (quil/pixels)]
-    (doall (map-indexed #(aset-int pixels %1
-                                   (apply quil/color (:color %2)))
-                        (:cells substrate))))
+  (let [pixels (quil/pixels)
+        num-pixels (:count substrate)
+        colors (map convert-to-color (:cells substrate))
+        to-write (int-array num-pixels colors)]
+    (System/arraycopy to-write 0 pixels 0 num-pixels))
   (quil/update-pixels))
 
 (defn draw []

@@ -5,8 +5,9 @@
 (defn create-substrate [width height attributes]
   {:width width
    :height height
-   :cells (repeat (* width height)
-                  attributes)})
+   :count (* width height)
+   :cells (vec (repeat (* width height)
+                       attributes))})
 
 (defn cell-at [substrate i j]
   (nth (:cells substrate)
