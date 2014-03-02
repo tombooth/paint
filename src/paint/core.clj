@@ -76,10 +76,11 @@
         substrate-height (:height substrate)
         extracted (util/extract cells substrate-width
                                 substrate-height i j)
-        brushed (brush-fn extracted brush-width brush-height)]
+        brushed (brush-fn brush-width brush-height)
+        mixed (map mix extracted brushed)]
     (assoc substrate :cells (util/patch cells substrate-width
                                         substrate-height i j
-                                        brushed))))
+                                        mixed))))
 
 
 (defn age-paint [host]

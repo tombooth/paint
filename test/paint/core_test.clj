@@ -17,8 +17,13 @@
     (is (nil? (core/cell-at substrate 1 1)))))
 
 
-(defn hard-white-brush [cells width height]
-  (map #(assoc % :paint-color [255 255 255]) cells))
+(defn hard-white-brush [width height]
+  (repeat (* width height)
+          {:liquid-content 15
+           :drying-rate 1
+           :paint-content 1
+           :paint-color [255 255 255]
+           :mix-range 1}))
 
 (deftest test-apply-brush
   (let [substrate (core/create-substrate 10 10)
