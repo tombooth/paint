@@ -4,14 +4,14 @@
 
 
 
-(defmacro for-patch-index [width height i j [arr-index-name patch-index-name] & body]
+(defmacro for-patch-index [width height i j patch-width patch-height [arr-index-name patch-index-name] & body]
   `(let [top-left# (dec (+ ~i (* ~width (dec ~j))))]
-     (doseq [patch-row# (range 3)
-             patch-col# (range 3)
+     (doseq [patch-row# (range ~patch-height)
+             patch-col# (range ~patch-width)
              :let [row-start# (* ~width (+ patch-row# (dec ~j)))
                    row-end# (+ row-start# ~width)
                    ~arr-index-name (+ top-left# (* ~width patch-row#) patch-col#)
-                   ~patch-index-name (+ (* 3 patch-row#) patch-col#)]
+                   ~patch-index-name (+ (* ~patch-width patch-row#) patch-col#)]
              :when (and (>= ~arr-index-name 0)
                         (< ~arr-index-name (* ~width ~height))
                         (>= ~arr-index-name row-start#)
@@ -20,18 +20,18 @@
 
 
 
-(defn extract [arr width height i j]
-  (let [patch (transient (vec (repeat 9 nil)))]
-    (for-patch-index width height i j
+(defn extract [arr width height i j patch-width patch-height]
+  (let [patch (transient (vec (repeat (* patch-width patch-height) nil)))]
+    (for-patch-index width height i j patch-width patch-height
                      [arr-index patch-index]
                      (assoc! patch patch-index (nth arr arr-index)))
     (persistent! patch)))
 
 
 
-(defn patch [arr width height i j patch-arr]
+(defn patch [arr width height i j patch-arr patch-width patch-height]
   (let [trans-arr (transient arr)]
-    (for-patch-index width height i j
+    (for-patch-index width height i j patch-width patch-height
                      [arr-index patch-index]
                      (assoc! trans-arr arr-index (nth patch-arr patch-index)))
     (persistent! trans-arr)))
