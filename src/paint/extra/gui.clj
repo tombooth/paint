@@ -6,8 +6,15 @@
 
 
 (def substrate-state (atom {}))
-(def brush-state (atom {:width 3 :height 3
-                        :fn (brush/block [0 0 0])}))
+(def brush-state (atom [{:width 3 :height 3
+                         :fn (brush/block [0 0 0])}
+                        {:width 3 :height 3
+                         :fn (brush/block [255 0 0])}
+                        {:width 3 :height 3
+                         :fn (brush/block [0 255 0])}
+                        {:width 3 :height 3
+                         :fn (brush/block [0 0 255])}]))
+(def selected-brush (atom 0))
 
 
 (defn engine [substrate-state]
@@ -20,7 +27,7 @@
 
 
 (defn setup []
-  (.start (Thread. (partial engine substrate-state))))
+  (comment (.start (Thread. (partial engine substrate-state)))))
 
 
 (defn memoized-color []
@@ -54,13 +61,22 @@
 
 (defn mouse-dragged []
   (let [x (quil/mouse-x)
-        y (quil/mouse-y)
-        brush @brush-state]
-    (swap! substrate-state
-           paint/apply-brush
-           x y (:width brush)
-           (:height brush)
-           (:fn brush))))
+        y (quil/mouse-y)]
+    (if-let [brush (nth @brush-state @selected-brush)]
+      (swap! substrate-state
+             paint/apply-brush
+             x y (:width brush)
+             (:height brush)
+             (:fn brush))
+      (println "Invalid brush selected"))))
+
+(defn key-typed []
+  (let [key (str (quil/raw-key))]
+    (if (re-matches #"[0-9]" key)
+      (let [num (Integer/parseInt key)]
+        (reset! selected-brush num)
+        (println "Selected brush" num "with settings:"
+                 (nth @brush-state @selected-brush))))))
 
 (defn show-window [width height attributes]
   (reset! substrate-state
@@ -70,6 +86,7 @@
                :setup setup
                :draw draw
                :mouse-dragged mouse-dragged
+               :key-typed key-typed
                :size [width height]
                :renderer :p2d))
 
