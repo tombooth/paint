@@ -2,5 +2,5 @@
 
 (defn block [color]
   (fn [cells width height]
-    (map #(assoc % :color color) cells)))
+    (map #(assoc % :paint-color color) cells)))
 

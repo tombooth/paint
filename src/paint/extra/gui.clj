@@ -25,8 +25,9 @@
 
 (defn memoized-color []
   (let [mem (atom {})]
-    (fn [{[r g b] :color}]
-      (let [int-val (bit-or (bit-shift-left r 0)
+    (fn [{color :color paint-color :paint-color}]
+      (let [[r g b] (if (nil? paint-color) color paint-color)
+            int-val (bit-or (bit-shift-left r 0)
                             (bit-shift-left g 8)
                             (bit-shift-left b 16))]
         (if-let [e (find @mem int-val)]
