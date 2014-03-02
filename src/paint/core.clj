@@ -36,6 +36,18 @@
                                         substrate-height i j
                                         brushed))))
 
+
+(defn age-paint [host]
+  (let [{liquid-content :liquid-content
+         drying-rate :drying-rate} host
+         should-dry (< (rand) drying-rate)
+         new-liquid-content (if should-dry
+                              (dec liquid-content)
+                              liquid-content)]
+    (if (<= new-liquid-content 0)
+      [true (assoc host :liquid-content 0)]
+      [false (assoc host :liquid-content new-liquid-content)])))
+
 (defn engine-cycle [substrate i j]
   (let [{width :width height :height cells :cells} substrate
         cluster (util/extract cells width height i j)
