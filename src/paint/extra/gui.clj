@@ -6,15 +6,15 @@
 
 
 (def substrate-state (atom {}))
-(def brush-state (atom [{:width 10 :height 10
-                         :fn (brush/block [0 0 0])}
-                        {:width 10 :height 10
-                         :fn (brush/block [255 0 0])}
-                        {:width 10 :height 10
-                         :fn (brush/block [0 255 0])}
-                        {:width 10 :height 10
-                         :fn (brush/block [0 0 255])}]))
-(def selected-brush (atom 0))
+(def brushes (atom [{:width 10 :height 10
+                     :fn (brush/block [0 0 0])}
+                    {:width 10 :height 10
+                     :fn (brush/block [255 0 0])}
+                    {:width 10 :height 10
+                     :fn (brush/block [0 255 0])}
+                    {:width 10 :height 10
+                     :fn (brush/block [0 0 255])}]))
+(def selected-brush (atom 1))
 
 
 (defn engine [substrate-state]
@@ -61,22 +61,38 @@
 
 (defn mouse-dragged []
   (let [x (quil/mouse-x)
-        y (quil/mouse-y)]
-    (if-let [brush (nth @brush-state @selected-brush)]
-      (swap! substrate-state
-             paint/apply-brush
-             x y (:width brush)
-             (:height brush)
-             (:fn brush))
+        y (quil/mouse-y)
+        brush-num @selected-brush
+        brushes @brushes]
+    (if (and (> brush-num 0)
+             (<= brush-num (count brushes)))
+      (let [brush (nth brushes (dec brush-num))]
+        (swap! substrate-state
+               paint/apply-brush
+               x y (:width brush)
+               (:height brush)
+               (:fn brush)))
       (println "Invalid brush selected"))))
 
+(defn mouse-clicked []
+  (let [x (quil/mouse-x)
+        y (quil/mouse-y)
+        brush-num @selected-brush]
+    (if (= brush-num 0)
+      (println (paint/cell-at @substrate-state
+                              x y)))))
 (defn key-typed []
   (let [key (str (quil/raw-key))]
     (if (re-matches #"[0-9]" key)
-      (let [num (Integer/parseInt key)]
-        (reset! selected-brush num)
-        (println "Selected brush" num "with settings:"
-                 (nth @brush-state @selected-brush))))))
+      (let [num (Integer/parseInt key)
+            brushes @brushes]
+        (if (<= num (count brushes))
+          (do (reset! selected-brush num)
+              (if (= num 0)
+                (println "Selected inspector, cells clicked will output their properties")
+                (println "Selected brush" num "with settings:"
+                         (nth brushes (dec num)))))
+          (println "Invalid brush selected"))))))
 
 (defn show-window [width height attributes]
   (reset! substrate-state
@@ -86,6 +102,7 @@
                :setup setup
                :draw draw
                :mouse-dragged mouse-dragged
+               :mouse-clicked mouse-clicked
                :key-typed key-typed
                :size [width height]
                :renderer :p2d))
