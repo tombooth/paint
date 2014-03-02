@@ -49,3 +49,11 @@
                                             5 4 5 6])))
 
 
+
+(deftest test-rgb-to-hsl
+  (is (= (util/rgb-to-hsl 255 0 0)
+         [0.0 100.0 50.0])))
+
+(deftest test-hsl-to-rgb
+  (is (= (util/hsl-to-rgb 0.0 100.0 50.0)
+         [255 0 0])))
