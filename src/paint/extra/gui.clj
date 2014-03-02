@@ -6,13 +6,13 @@
 
 
 (def substrate-state (atom {}))
-(def brush-state (atom [{:width 3 :height 3
+(def brush-state (atom [{:width 10 :height 10
                          :fn (brush/block [0 0 0])}
-                        {:width 3 :height 3
+                        {:width 10 :height 10
                          :fn (brush/block [255 0 0])}
-                        {:width 3 :height 3
+                        {:width 10 :height 10
                          :fn (brush/block [0 255 0])}
-                        {:width 3 :height 3
+                        {:width 10 :height 10
                          :fn (brush/block [0 0 255])}]))
 (def selected-brush (atom 0))
 
