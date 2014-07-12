@@ -9,4 +9,9 @@
                        {:liquid-content 5}))
   (is (not (mixer/cells-mix? {:liquid-content 10
                              :mix-range 10}
-                            {:liquid-content 30}))))
+                             {:liquid-content 30})))
+  (is (not (mixer/cells-mix? {:liquid-content 10
+                              :mix-range 10}
+                             nil)))
+  (is (not (mixer/cells-mix? nil
+                             {:liquid-content 30}))))

@@ -3,9 +3,10 @@
 
 
 (defn cells-mix? [into other]
-  (let [diff (abs (- (:liquid-content other)
-                     (:liquid-content into)))]
-    (<= diff (:mix-range into))))
+  (if (not (or (nil? into) (nil? other)))
+    (let [diff (abs (- (:liquid-content other)
+                       (:liquid-content into)))]
+      (<= diff (:mix-range into)))))
 
 
 (defprotocol Mixer
