@@ -1,17 +1,19 @@
 (ns paint.core
   (:require [paint.mixer :as mixer]
             [paint.mixer.hsl :as hsl-mixer]
+            [paint.chronos :as chronos]
             [paint.util :as util]))
 
 
 (defn create-substrate
   ([width height]
-     (create-substrate width height (hsl-mixer/->HSLMixer) {}))
-  ([width height mixer attributes]
+     (create-substrate width height (hsl-mixer/->HSLMixer) (chronos/->BasicChronos) {}))
+  ([width height mixer-instance chronos-instance attributes]
      {:width width
       :height height
       :count (* width height)
-      :mixer-instance mixer
+      :mixer-instance mixer-instance
+      :chronos-instance chronos-instance
       :cells (vec (repeat (* width height)
                           (merge {:color [255 255 255]
                                   :liquid-content 0
@@ -48,18 +50,6 @@
     (assoc substrate :cells (util/patch cells substrate-width
                                         substrate-height i j
                                         mixed brush-width brush-height))))
-
-
-(defn age-paint [host]
-  (let [{liquid-content :liquid-content
-         drying-rate :drying-rate} host
-         should-dry (< (rand) drying-rate)
-         new-liquid-content (if should-dry
-                              (dec liquid-content)
-                              liquid-content)]
-    (if (<= new-liquid-content 0)
-      [true (assoc host :liquid-content 0)]
-      [false (assoc host :liquid-content new-liquid-content)])))
 
 
 (defn engine-cycle [substrate i j]
