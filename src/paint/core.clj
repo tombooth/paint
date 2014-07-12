@@ -1,15 +1,17 @@
 (ns paint.core
-  (:require [clojure.math.numeric-tower :refer [abs]]
+  (:require [paint.mixer :as mixer]
+            [paint.mixer.hsl :as hsl-mixer]
             [paint.util :as util]))
 
 
 (defn create-substrate
   ([width height]
-     (create-substrate width height {}))
-  ([width height attributes]
+     (create-substrate width height (hsl-mixer/->HSLMixer) {}))
+  ([width height mixer attributes]
      {:width width
       :height height
       :count (* width height)
+      :mixer-instance mixer
       :cells (vec (repeat (* width height)
                           (merge {:color [255 255 255]
                                   :liquid-content 0
@@ -23,47 +25,6 @@
                                  attributes)))}))
 
 
-(defn paint-ratio [{paint-content-a :paint-content}
-                   {paint-content-b :paint-content}]
-  (let [total (+ paint-content-a paint-content-b)]
-    (/ paint-content-b total)))
-
-
-(defn interpolate-vectors [v1 v2 ratio]
-  (let [diff-vector (map - v2 v1)
-        ratio-vector (map #(* % ratio) diff-vector)]
-    (map + v1 ratio-vector)))
-
-(defn interpolate-colors [{color-a :paint-color}
-                          {color-b :paint-color}
-                          ratio]
-  (let [hsl-a (apply util/rgb-to-hsl color-a)
-        hsl-b (apply util/rgb-to-hsl color-b)
-        new-hsl (interpolate-vectors hsl-a hsl-b ratio)]
-    (apply util/hsl-to-rgb new-hsl)))
-
-(defn interpolate-key [key map-a map-b ratio]
-  (let [val-a (map-a key)
-        val-b (map-b key)
-        diff (- val-b val-a)]
-    (+ val-a (* diff ratio))))
-
-
-(defn cells-mix? [into other]
-  (let [diff (abs (- (:liquid-content other)
-                     (:liquid-content into)))]
-    (<= diff (:mix-range into))))
-
-(defn mix [into other]
-  (if (cells-mix? into other)
-    (let [ratio (paint-ratio into other)]
-      (merge into {:liquid-content (interpolate-key :liquid-content into other ratio)
-                   :drying-rate (interpolate-key :drying-rate into other ratio)
-                   :paint-content (+ (:paint-content into) (:paint-content other))
-                   :paint-color (interpolate-colors into other ratio)
-                   :mix-range (interpolate-key :mix-range into other ratio)}))
-    (merge into other)))
-
 
 (defn cell-at [substrate i j]
   (nth (:cells substrate)
@@ -72,13 +33,18 @@
 
 (defn apply-brush [substrate i j brush-width brush-height brush-fn]
   (let [cells (:cells substrate)
+        mixer-instance (:mixer-instance substrate)
         substrate-width (:width substrate)
         substrate-height (:height substrate)
+        
         extracted (util/extract cells substrate-width
                                 substrate-height i j
                                 brush-width brush-height)
+        
         brushed (brush-fn brush-width brush-height)
-        mixed (map mix extracted brushed)]
+        
+        mixed (map (partial mixer/mix mixer-instance) extracted brushed)]
+    
     (assoc substrate :cells (util/patch cells substrate-width
                                         substrate-height i j
                                         mixed brush-width brush-height))))
@@ -97,7 +63,10 @@
 
 
 (defn engine-cycle [substrate i j]
-  (let [{width :width height :height cells :cells} substrate
+  (let [{width :width
+         height :height
+         cells :cells
+         mixer-instance :mixer-instance} substrate
         cluster (util/extract cells width height i j)
         host (nth cluster 4)
         patched (assoc cluster 4 (assoc host :color [255 0 0]))]

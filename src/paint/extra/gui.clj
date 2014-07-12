@@ -94,10 +94,9 @@
                          (nth brushes (dec num)))))
           (println "Invalid brush selected"))))))
 
-(defn show-window [width height attributes]
+(defn show-window [width height]
   (reset! substrate-state
-          (paint/create-substrate width height
-                                  attributes))
+          (paint/create-substrate width height))
   (quil/sketch :title "Painting with Clojure"
                :setup setup
                :draw draw
@@ -108,6 +107,6 @@
                :renderer :p2d))
 
 (defn -main [& args]
-  (show-window 640 480 {:color [255 255 255]}))
+  (show-window 640 480))
 
 
