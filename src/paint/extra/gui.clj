@@ -47,7 +47,6 @@
 (def convert-to-color (memoized-color))
 
 (defn draw-pixels [substrate]
-  (quil/load-pixels)
   (let [pixels (quil/pixels)
         num-pixels (:count substrate)
         colors (map convert-to-color (:cells substrate))
