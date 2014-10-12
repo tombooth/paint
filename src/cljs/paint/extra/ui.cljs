@@ -5,7 +5,7 @@
 
 (enable-console-print!)
 
-(defn hex-color [& args]
+(defn- hex-color [& args]
   (apply str "#" (map #(.toString % 16) args)))
 
 (defn- build-cell [cell]
