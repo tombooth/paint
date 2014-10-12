@@ -1,6 +1,10 @@
 (ns paint.core-test
-  (:require [clojure.test :refer :all]
-            [paint.core :as core]))
+  #+clj (:require [clojure.test :refer :all]
+                  [paint.core :as core])
+  #+cljs (:require-macros [cemerick.cljs.test
+                           :refer (is deftest testing block-or-done)])
+  #+cljs (:require [cemerick.cljs.test :as t]
+                   [paint.core :as core]))
 
 
 (deftest test-create-substrate

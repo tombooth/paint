@@ -1,23 +1,6 @@
 (ns paint.util
-  (:require [clojure.math.numeric-tower :refer [abs round]]))
-
-
-
-
-(defmacro for-patch-index [width height i j patch-width patch-height [arr-index-name patch-index-name] & body]
-  `(let [top-left# (dec (+ ~i (* ~width (dec ~j))))]
-     (doseq [patch-row# (range ~patch-height)
-             patch-col# (range ~patch-width)
-             :let [row-start# (* ~width (+ patch-row# (dec ~j)))
-                   row-end# (+ row-start# ~width)
-                   ~arr-index-name (+ top-left# (* ~width patch-row#) patch-col#)
-                   ~patch-index-name (+ (* ~patch-width patch-row#) patch-col#)]
-             :when (and (>= ~arr-index-name 0)
-                        (< ~arr-index-name (* ~width ~height))
-                        (>= ~arr-index-name row-start#)
-                        (< ~arr-index-name row-end#))]
-       ~@body)))
-
+  #+clj (:require [paint.macros :refer (for-patch-index)])
+  #+cljs (:require-macros [paint.macros :refer (for-patch-index)]))
 
 
 (defn extract [arr width height i j patch-width patch-height]
@@ -75,7 +58,7 @@ http://www.w3.org/TR/css3-color/#hsl-color"
                 (- (+ l s) (* l s)))
          m1 (- (* l 2) m2)]
         (into []
-              (map #(round (* 0xff %))
+              (map #(Math/round (* 0xff %))
                    [(hue-to-rgb m1 m2 (+ h (/ 1.0 3)))
                     (hue-to-rgb m1 m2 h)
                     (hue-to-rgb m1 m2 (- h (/ 1.0 3)))]))))

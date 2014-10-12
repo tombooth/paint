@@ -1,6 +1,10 @@
 (ns paint.mixer-test
-  (:require [clojure.test :refer :all]
-            [paint.mixer :as mixer]))
+  #+clj (:require [clojure.test :refer :all]
+                  [paint.mixer :as mixer])
+  #+cljs (:require-macros [cemerick.cljs.test
+                           :refer (is deftest testing block-or-done)])
+  #+cljs (:require [cemerick.cljs.test :as t]
+                   [paint.mixer :as mixer]))
 
 
 (deftest test-cells-mix?

@@ -1,6 +1,10 @@
 (ns paint.util-test
-  (:require [clojure.test :refer :all]
-            [paint.util :as util]))
+  #+clj (:require [clojure.test :refer :all]
+                  [paint.util :as util])
+  #+cljs (:require-macros [cemerick.cljs.test
+                           :refer (is deftest testing block-or-done)])
+  #+cljs (:require [cemerick.cljs.test :as t]
+                   [paint.util :as util]))
 
 (def square [1 2 3 4
              4 5 6 7

@@ -5,7 +5,7 @@
             [paint.util :as util]))
 
 
-(defn create-substrate
+(defn ^:export create-substrate
   ([width height]
      (create-substrate width height (hsl-mixer/->HSLMixer) (chronos/->BasicChronos) {}))
   ([width height mixer-instance chronos-instance attributes]
@@ -33,7 +33,7 @@
        (+ i (* j (:width substrate)))
        nil))
 
-(defn apply-brush [substrate i j brush-width brush-height brush-fn]
+(defn ^:export apply-brush [substrate i j brush-width brush-height brush-fn]
   (let [cells (:cells substrate)
         mixer-instance (:mixer-instance substrate)
         substrate-width (:width substrate)
@@ -52,13 +52,13 @@
                                         mixed brush-width brush-height))))
 
 
-(defn engine-cycle [substrate i j]
+(defn ^:export engine-cycle [substrate i j]
   (let [{width :width
          height :height
          cells :cells
          mixer-instance :mixer-instance} substrate
-        cluster (util/extract cells width height i j)
+        cluster (util/extract cells width height i j 3 3)
         host (nth cluster 4)
         patched (assoc cluster 4 (assoc host :color [255 0 0]))]
-    (assoc substrate :cells (util/patch cells width height i j patched))))
+    (assoc substrate :cells (util/patch cells width height i j patched 3 3))))
 

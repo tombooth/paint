@@ -1,6 +1,10 @@
-(ns paint.chronos_test
-  (:require [clojure.test :refer :all]
-            [paint.chronos :as chronos]))
+(ns paint.chronos-test
+  #+clj (:require [clojure.test :refer :all]
+                  [paint.chronos :as chronos])
+  #+cljs (:require-macros [cemerick.cljs.test
+                           :refer (is deftest testing block-or-done)])
+  #+cljs (:require [cemerick.cljs.test :as t]
+                   [paint.chronos :as chronos]))
 
 
 (deftest test-age-paint
