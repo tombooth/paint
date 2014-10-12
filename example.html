@@ -13,11 +13,15 @@
       <h1>Paint</h1>
     </header>
     <main>
-      Will visualise the algorithm.
-      </main>
+      <div id="visualisation">
+      </div>
+    </main>
     <footer>
       Made with <abbr class="heart" title="love">&#9829;</abbr> by <a href="http://tombooth.co.uk">Tom Booth</a>
     </footer>
-    <script src="dist/paint.min.js" type="text/javascript" charset="utf-8"></script>
+    <script src="dist/paint.all.js" type="text/javascript" charset="utf-8"></script>
+    <script type="text/javascript" charset="utf-8">
+      paint.extra.ui.visualise_substrate(9, 9, document.querySelector('#visualisation'));
+    </script>
   </body>
 </html>

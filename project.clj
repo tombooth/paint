@@ -6,7 +6,8 @@
 
   :dependencies [[org.clojure/clojure "1.6.0"]
                  [org.clojure/clojurescript "0.0-2371"]
-                 [quil "2.2.2"]]
+                 [quil "2.2.2"]
+                 [om "0.7.3"]]
 
   :plugins [[com.keminglabs/cljx "0.4.0"]
             [com.cemerick/clojurescript.test "0.3.1"]
@@ -43,7 +44,15 @@
                                          :output-dir "dist/dist.tmp"
                                          :optimizations :advanced
                                          :source-map "dist/paint.min.map.js"
-                                         :pretty-print false}}}
+                                         :pretty-print false}}
+                       :all {:source-paths ["src/cljs"
+                                            "target/cljs-generated"]
+                             :compiler {:output-to "dist/paint.all.js"
+                                        :output-dir "dist/all.tmp"
+                                        :source-map "dist/paint.all.map.js"
+                                        :preamble ["react/react.js"]
+                                        :externs ["react/externs/react.js"]
+                                        :pretty-print true}}}
               :test-commands {"unit" ["phantomjs" :runner
                                       "this.literal_js_was_evaluated=true"
                                       "target/cljs/testable.js"]}}
