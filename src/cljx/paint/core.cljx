@@ -7,7 +7,12 @@
 
 (defn ^:export create-substrate
   ([width height]
-     (create-substrate width height (hsl-mixer/->HSLMixer) (chronos/->BasicChronos) {}))
+     (create-substrate width height {}))
+  ([width height attributes]
+     (create-substrate width height
+                       (hsl-mixer/->HSLMixer)
+                       (chronos/->BasicChronos)
+                       attributes))
   ([width height mixer-instance chronos-instance attributes]
      {:width width
       :height height
