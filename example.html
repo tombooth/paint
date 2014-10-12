@@ -13,6 +13,7 @@
       <h1>Paint</h1>
     </header>
     <main>
+      <div id="svg-warning" style="display:none;">SVG support is required by this example, please use a different browser</div>
       <div id="visualisation">
       </div>
     </main>
@@ -21,6 +22,14 @@
     </footer>
     <script src="dist/paint.all.js" type="text/javascript" charset="utf-8"></script>
     <script type="text/javascript" charset="utf-8">
+      try {
+        if (!document.implementation.hasFeature("http://www.w3.org/TR/SVG11/feature#BasicStructure", "1.1")) {
+          document.getElementById("svg-warning").style.display = "block";
+        }
+      } catch (ex) {
+        document.getElementById("svg-warning").style.display = "block";
+      }
+
       paint.extra.ui.visualise_substrate(9, 9, document.querySelector('#visualisation'));
     </script>
   </body>
